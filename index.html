@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jadwal Waktu Sholat - DHR Kab. Sukabumi</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #047857;
+            --primary-dark: #065f46;
+            --accent: #10b981;
+            --bg-color: #f3f4f6;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #6b7280;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 16px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo-wrap {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 12px;
+            overflow: hidden;
+            border: 2px solid #e5e7eb;
+        }
+
+        .logo-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+            font-weight: 800;
+        }
+
+        header .subtitle {
+            font-size: 0.95rem;
+            color: var(--primary);
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .author-badge {
+            display: inline-block;
+            background: #ecfdf5;
+            color: var(--primary-dark);
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+            margin-top: 8px;
+            border: 1px solid #a7f3d0;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04);
+            margin-bottom: 16px;
+        }
+
+        /* Countdown Section */
+        .countdown-box {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+            text-align: center;
+            border-radius: 16px;
+            padding: 22px 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 10px 20px -3px rgba(4, 120, 87, 0.35);
+        }
+
+        .countdown-box h3 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            opacity: 0.95;
+            font-weight: 700;
+        }
+
+        .countdown-box .next-sholat {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin: 6px 0 10px 0;
+        }
+
+        .countdown-box .timer {
+            font-size: 2rem;
+            font-weight: 800;
+            font-family: monospace;
+            background: rgba(0, 0, 0, 0.15);
+            padding: 8px 16px;
+            border-radius: 12px;
+            display: inline-block;
+            letter-spacing: 2px;
+        }
+
+        /* Prayer Times List */
+        .schedule-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .schedule-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 13px 16px;
+            background: #f9fafb;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.25s ease;
+        }
+
+        .schedule-item.active {
+            background: #ecfdf5;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.25);
+        }
+
+        .schedule-item .name-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .schedule-item .name {
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-main);
+        }
+
+        .schedule-item.active .name {
+            color: var(--primary-dark);
+            font-weight: 700;
+        }
+
+        .schedule-item .active-tag {
+            display: none;
+            font-size: 0.7rem;
+            background: var(--accent);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+        }
+
+        .schedule-item.active .active-tag {
+            display: inline-block;
+        }
+
+        .schedule-item .time {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+
+        .footer-card {
+            text-align: center;
+            padding: 16px;
+            background: #ffffff;
+            border-radius: 14px;
+            border: 1px solid #e5e7eb;
+            margin-top: 10px;
+        }
+
+        .footer-card h4 {
+            color: var(--primary-dark);
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .footer-card p {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="logo-wrap">
+                <img src="logo_dhr.png" alt="Logo DHR Kabupaten Sukabumi" onerror="this.src='app/src/main/res/drawable/logo_dhr_sukabumi.jpg'">
+            </div>
+            <h1>Jadwal Sholat</h1>
+            <p class="subtitle">Kabupaten Sukabumi & Sekitarnya</p>
+            <div class="author-badge">Dibuat oleh: DHR Kabupaten Sukabumi</div>
+        </header>
+
+        <!-- Kotak Hitung Mundur -->
+        <div class="countdown-box">
+            <h3 id="next-label">Menuju Waktu Sholat</h3>
+            <div class="next-sholat" id="next-name">Memuat...</div>
+            <div class="timer" id="countdown-timer">--:--:--</div>
+        </div>
+
+        <!-- Daftar Jadwal Sholat Hari Ini -->
+        <div class="card">
+            <div style="margin-bottom: 14px; text-align: center;">
+                <strong id="current-date" style="font-size: 0.95rem; color: var(--text-main);">Memuat Tanggal...</strong>
+            </div>
+            
+            <div class="schedule-list" id="schedule-container">
+                <!-- Data jadwal dimuat otomatis lewat JavaScript -->
+            </div>
+        </div>
+
+        <!-- Footer Card Atribusi DHR -->
+        <div class="footer-card">
+            <h4>Dewan Hisab dan Rukyat (DHR) Kabupaten Sukabumi</h4>
+            <p>Data jadwal hisab & rukyat resmi Kemenag RI</p>
+        </div>
+    </div>
+
+    <script>
+        let countdownInterval = null;
+
+        async function fetchJadwalSholat() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+
+            document.getElementById('current-date').innerText = today.toLocaleDateString('id-ID', { 
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+            });
+
+            try {
+                // ID 1216 adalah kode resmi Kabupaten Sukabumi pada API Kemenag / MyQuran
+                const response = await fetch(`https://api.myquran.com/v2/sholat/jadwal/1216/${year}/${month}/${day}`);
+                const data = await response.json();
+
+                if (data.status && data.data && data.data.jadwal) {
+                    renderJadwal(data.data.jadwal);
+                } else {
+                    fallbackJadwal();
+                }
+            } catch (error) {
+                console.error("Gagal memuat API:", error);
+                fallbackJadwal();
+            }
+        }
+
+        function renderJadwal(jadwal) {
+            const listContainer = document.getElementById('schedule-container');
+            
+            const prayers = [
+                { key: 'imsak', name: 'Imsak', time: jadwal.imsak || '04:10', isFardhu: false },
+                { key: 'subuh', name: 'Subuh', time: jadwal.subuh || '04:20', isFardhu: true },
+                { key: 'terbit', name: 'Terbit', time: jadwal.terbit || '05:33', isFardhu: false },
+                { key: 'dhuha', name: 'Dhuha', time: jadwal.dhuha || '06:00', isFardhu: false },
+                { key: 'dzuhur', name: 'Dzuhur', time: jadwal.dzuhur || '11:45', isFardhu: true },
+                { key: 'ashar', name: 'Ashar', time: jadwal.ashar || '14:48', isFardhu: true },
+                { key: 'maghrib', name: 'Maghrib', time: jadwal.maghrib || '17:51', isFardhu: true },
+                { key: 'isya', name: 'Isya', time: jadwal.isya || '19:00', isFardhu: true }
+            ];
+
+            listContainer.innerHTML = '';
+            
+            const currentTimeMinutes = getCurrentMinutes();
+            let nextPrayer = null;
+
+            // Prioritaskan sholat fardhu berikutnya
+            for (let prayer of prayers) {
+                if (prayer.isFardhu && timeToMinutes(prayer.time) > currentTimeMinutes) {
+                    nextPrayer = prayer;
+                    break;
+                }
+            }
+
+            // Jika lewat Isya, target sholat berikutnya adalah Subuh besok
+            if (!nextPrayer) {
+                nextPrayer = prayers.find(p => p.key === 'subuh') || prayers[1];
+            }
+
+            prayers.forEach((prayer) => {
+                const isActive = (nextPrayer && prayer.key === nextPrayer.key);
+
+                const item = document.createElement('div');
+                item.className = `schedule-item ${isActive ? 'active' : ''}`;
+                item.innerHTML = `
+                    <div class="name-wrap">
+                        <span class="name">${prayer.name}</span>
+                        ${isActive ? '<span class="active-tag">Berikutnya</span>' : ''}
+                    </div>
+                    <span class="time">${prayer.time}</span>
+                `;
+                listContainer.appendChild(item);
+            });
+
+            updateCountdown(nextPrayer);
+        }
+
+        function timeToMinutes(timeStr) {
+            const [hours, minutes] = timeStr.split(':').map(Number);
+            return hours * 60 + minutes;
+        }
+
+        function getCurrentMinutes() {
+            const now = new Date();
+            return now.getHours() * 60 + now.getMinutes();
+        }
+
+        function updateCountdown(nextPrayer) {
+            const timerEl = document.getElementById('countdown-timer');
+            const nextNameEl = document.getElementById('next-name');
+            
+            nextNameEl.innerText = `${nextPrayer.name} (${nextPrayer.time})`;
+
+            if (countdownInterval) clearInterval(countdownInterval);
+
+            function tick() {
+                const now = new Date();
+                const [targetHours, targetMinutes] = nextPrayer.time.split(':').map(Number);
+                
+                let targetDate = new Date();
+                targetDate.setHours(targetHours, targetMinutes, 0, 0);
+
+                if (now > targetDate) {
+                    targetDate.setDate(targetDate.getDate() + 1);
+                }
+
+                const diff = targetDate - now;
+                
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                timerEl.innerText = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            }
+
+            tick();
+            countdownInterval = setInterval(tick, 1000);
+        }
+
+        function fallbackJadwal() {
+            const fallbackData = {
+                imsak: '04:10', subuh: '04:20', terbit: '05:33', dhuha: '06:00',
+                dzuhur: '11:45', ashar: '14:48', maghrib: '17:51', isya: '19:00'
+            };
+            renderJadwal(fallbackData);
+        }
+
+        // Jalankan saat halaman dibuka
+        fetchJadwalSholat();
+    </script>
+</body>
+</html>
